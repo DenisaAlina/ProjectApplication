@@ -1,6 +1,6 @@
 package org.fasttrackit.ProjectApp.service;
 
-import org.fasttrackit.ProjectApp.dao.UserDao;
+import org.fasttrackit.ProjectApp.repository.UserRepository;
 import org.fasttrackit.ProjectApp.model.ProjectAppRequest;
 import org.fasttrackit.ProjectApp.model.ProjectAppResponse;
 import org.fasttrackit.ProjectApp.model.User;
@@ -10,14 +10,12 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,7 +23,7 @@ import java.util.Set;
 public class ProjectAppService implements UserDetailsService {
 
     @Autowired
-    private UserDao userDao;
+    private UserRepository userRepository;
     @Autowired
     private ProjectAppUtil projectAppUtil;
 
@@ -38,13 +36,13 @@ public class ProjectAppService implements UserDetailsService {
         authenticate(userName, userPassword);
         UserDetails userDetails=loadUserByUsername(userName);
        String newGeneratedToken=projectAppUtil.generateToken(userDetails);
-       User user=userDao.findById(userName).get();
+       User user= userRepository.findById(userName).get();
        return new ProjectAppResponse(user, newGeneratedToken);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDao.findById(username).get();
+        User user = userRepository.findById(username).get();
 
         if (user != null) {
             return new org.springframework.security.core.userdetails.User(

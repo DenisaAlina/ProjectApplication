@@ -1,7 +1,7 @@
 package org.fasttrackit.ProjectApp.service;
 
-import org.fasttrackit.ProjectApp.dao.RoleDao;
-import org.fasttrackit.ProjectApp.dao.UserDao;
+import org.fasttrackit.ProjectApp.repository.RoleRepository;
+import org.fasttrackit.ProjectApp.repository.UserRepository;
 import org.fasttrackit.ProjectApp.model.Role;
 import org.fasttrackit.ProjectApp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,31 +15,31 @@ import java.util.Set;
 public class UserService {
 
     @Autowired
-    private UserDao userDao;
+    private UserRepository userRepository;
     @Autowired
-    private RoleDao roleDao;
+    private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
     public User registerNewUser(User user){
-      Role role = roleDao.findById("User").get();
+      Role role = roleRepository.findById("User").get();
       Set<Role> roles = new HashSet<>();
       roles.add(role);
       user.setRole(roles);
       user.setUserPassword(getEncodedPassword(user.getUserPassword()));
-        return  userDao.save(user);
+        return  userRepository.save(user);
     }
 
     public void initRolesAndUser(){
         Role adminRole = new Role();
         adminRole.setRoleName("Admin");
         adminRole.setRoleDescription("Admin role");
-        roleDao.save(adminRole);
+        roleRepository.save(adminRole);
 
         Role userRole = new Role();
         userRole.setRoleName("User");
         userRole.setRoleDescription("Default role for newly created record");
-        roleDao.save(userRole);
+        roleRepository.save(userRole);
 
         User adminUser= new User();
         adminUser.setUserFirstName("admin");
@@ -49,7 +49,7 @@ public class UserService {
         Set<Role> adminRoles= new HashSet<>();
         adminRoles.add(adminRole);
         adminUser.setRole(adminRoles);
-        userDao.save(adminUser);
+        userRepository.save(adminUser);
 
 //        User user= new User();
 //        user.setUserFirstName("raj");
