@@ -59,7 +59,7 @@ public class UserService {
 //        Set<Role> userRoles= new HashSet<>();
 //        userRoles.add(userRole);
 //        user.setRole(userRoles);
-//        userDao.save(user);
+//        userRepository.save(user);
     }
 
     public String getEncodedPassword(String password){
